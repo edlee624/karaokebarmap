@@ -18,6 +18,8 @@ on:
   schedule:
     - cron: '17 8 */3 * *'   # every 3 days at 08:17 UTC (well inside the 7-day window)
   workflow_dispatch: {}       # allow manual runs from the Actions tab
+  push:
+    paths: ['.github/workflows/supabase-keepalive.yml']   # TEMP: verify secrets on edit
 
 jobs:
   ping:

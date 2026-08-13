@@ -1,0 +1,13 @@
+{
+  "name": "glowupbook",
+  "version": "0.1.0",
+  "description": "Glowup Book — booking CRM + online storefront for salons, barbers, hairdressers and nail studios",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve public -p 3000",
+    "build": "echo 'Static site, no build step needed'"
+  },
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}

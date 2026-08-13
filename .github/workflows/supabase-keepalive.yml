@@ -1,0 +1,46 @@
+name: Supabase keep-alive
+
+# Supabase free-tier projects PAUSE after 7 days with no activity. This makes a
+# tiny authenticated REST request every 3 days so the project stays awake.
+# A real table read counts as activity and resets the 7-day pause timer.
+#
+# Setup (one time):
+#   1. Create the Supabase project + run the migrations.
+#   2. In GitHub → repo → Settings → Secrets and variables → Actions, add:
+#        SUPABASE_URL       = https://<your-ref>.supabase.co
+#        SUPABASE_ANON_KEY  = <your anon / publishable key>
+#   3. Push this repo to GitHub. That's it — it runs on the schedule below.
+#
+# Note: GitHub disables scheduled workflows after 60 days with NO repo commits.
+# Any commit (or the manual "Run workflow" button) re-arms it.
+
+on:
+  schedule:
+    - cron: '17 8 */3 * *'   # every 3 days at 08:17 UTC (well inside the 7-day window)
+  workflow_dispatch: {}       # allow manual runs from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST (reads one row from public.salons)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::SUPABASE_URL / SUPABASE_ANON_KEY secrets are not set."
+            exit 1
+          fi
+          echo "Pinging $SUPABASE_URL ..."
+          code=$(curl -sS -o /tmp/body.txt -w '%{http_code}' \
+            "$SUPABASE_URL/rest/v1/salons?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "HTTP $code"
+          cat /tmp/body.txt
+          # 2xx means the DB served the query. Anything else fails the job so you notice.
+          case "$code" in
+            2*) echo "Keep-alive OK." ;;
+            *)  echo "::error::Unexpected status $code"; exit 1 ;;
+          esac

@@ -1,0 +1,12 @@
+node_modules/
+.vercel/
+.claude/
+.env
+.env.local
+.DS_Store
+
+# Note: public/config.js holds only the Supabase URL + PUBLISHABLE (anon) key,
+# which are safe to expose in the browser (RLS protects the data), so it IS
+# committed for the static Vercel deploy. Never put the service_role/secret key here.
+
+.vercel

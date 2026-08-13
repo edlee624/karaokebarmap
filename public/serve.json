@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/confirm/**", "destination": "/index.html" },
+    { "source": "/:slug([A-Za-z0-9-]+)", "destination": "/index.html" }
+  ]
+}

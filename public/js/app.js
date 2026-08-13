@@ -25,6 +25,23 @@ function esc(s) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 function show(id) { $$('.screen').forEach((s) => s.classList.remove('active')); $(id).classList.add('active'); }
+
+// ---- per-page SEO meta (client-rendered; Googlebot executes this) ----------
+const DEFAULT_TITLE = 'Karaoke Bar Map — Find karaoke bars & DJs near you';
+const DEFAULT_DESC = 'Discover karaoke bars, KTV rooms and karaoke DJs across the US on an interactive map — browse by city, book a private room, or hire a DJ for your event.';
+function setMeta({ title, description, path } = {}) {
+  const t = title || DEFAULT_TITLE;
+  const d = (description || DEFAULT_DESC).replace(/\s+/g, ' ').trim().slice(0, 160);
+  document.title = t;
+  const set = (sel, val) => { const n = document.head.querySelector(sel); if (n) n.setAttribute('content', val); };
+  set('meta[name="description"]', d);
+  set('meta[property="og:title"]', t);
+  set('meta[property="og:description"]', d);
+  const url = location.origin + (path != null ? path : location.pathname);
+  const upsert = (sel, make) => { let n = document.head.querySelector(sel); if (!n) { n = make(); document.head.append(n); } return n; };
+  upsert('link[rel="canonical"]', () => Object.assign(document.createElement('link'), { rel: 'canonical' })).href = url;
+  upsert('meta[property="og:url"]', () => { const m = document.createElement('meta'); m.setAttribute('property', 'og:url'); return m; }).setAttribute('content', url);
+}
 let toastT;
 function toast(msg, bad = false) {
   const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (bad ? ' bad' : '');
@@ -273,6 +290,9 @@ const LEGAL = {
 function startLegal(page) {
   show('#screen-legal');
   const body = $('#legal-body');
+  const titles = { terms: 'Terms of Service', privacy: 'Privacy Policy', legal: 'Legal' };
+  setMeta({ path: '/' + page, title: `${titles[page] || 'Legal'} | Karaoke Bar Map`,
+    description: `${titles[page] || 'Legal'} for Karaoke Bar Map — the US karaoke bar & DJ directory and booking platform.` });
   if (page === 'legal') {
     body.innerHTML = '<h1>Legal</h1><p><a href="/terms">Terms of Service</a> · <a href="/privacy">Privacy Policy</a></p>';
     return;
@@ -1310,6 +1330,7 @@ const isDJ = (s) => s.business_type === 'dj';
 
 async function startDirectory() {
   show('#screen-directory');
+  setMeta({ path: '/' });   // reset to site defaults on the homepage
   renderDirAuth();
   const footAcct = $('#foot-account');
   if (footAcct) footAcct.onclick = async (e) => {
@@ -1695,6 +1716,14 @@ async function startStorefront(sl) {
   let salon;
   try { salon = await API.storefront.salon(sl); } catch (e) { return errToast(e); }
   if (!salon) { root.append(el('div', { class: 'card empty' }, 'Booking page not found or not published.')); return; }
+
+  // Per-page SEO: unique title + description for this venue/performer.
+  const seoType = { karaoke_bar: 'karaoke bar', bar_with_karaoke: 'bar with karaoke', dj: 'karaoke DJ / KJ' }[salon.business_type] || 'karaoke spot';
+  setMeta({
+    path: '/' + salon.slug,
+    title: `${salon.name}${salon.city ? ' — ' + salon.city : ''} | Karaoke Bar Map`,
+    description: salon.about || `${salon.name} is a ${seoType}${salon.city ? ' in ' + salon.city : ''}${salon.address ? ' at ' + salon.address : ''}. Find details${isDJ(salon) ? ' and book them' : ' and book a room'} on Karaoke Bar Map.`,
+  });
 
   const sf = { salon, service: null, staff: null, date: todayISO(), slot: null };
   const hero = el('div', { class: 'store-hero' },

@@ -30,15 +30,19 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "::error::SUPABASE_URL / SUPABASE_ANON_KEY secrets are not set."
+          # Strip any whitespace/newlines that can sneak in when pasting secrets.
+          URL="$(printf '%s' "$SUPABASE_URL" | tr -d '[:space:]')"
+          KEY="$(printf '%s' "$SUPABASE_ANON_KEY" | tr -d '[:space:]')"
+          echo "url_len=${#URL}  key_len=${#KEY}"   # lengths only — never prints the values
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then
+            echo "::error::A secret is empty — check the names are exactly SUPABASE_URL and SUPABASE_ANON_KEY."
             exit 1
           fi
-          echo "Pinging $SUPABASE_URL ..."
+          echo "Pinging $URL ..."
           code=$(curl -sS -o /tmp/body.txt -w '%{http_code}' \
-            "$SUPABASE_URL/rest/v1/salons?select=id&limit=1" \
-            -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+            "$URL/rest/v1/salons?select=id&limit=1" \
+            -H "apikey: $KEY" \
+            -H "Authorization: Bearer $KEY")
           echo "HTTP $code"
           cat /tmp/body.txt
           # 2xx means the DB served the query. Anything else fails the job so you notice.

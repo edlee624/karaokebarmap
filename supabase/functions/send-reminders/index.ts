@@ -1,5 +1,5 @@
 // ============================================================================
-// Glowup Book — send-reminders (Supabase Edge Function)
+// Karaoke Bar Map — send-reminders (Supabase Edge Function)
 //
 // Run on a schedule (hourly or daily via Supabase Cron). Emails a reminder for
 // appointments starting ~24h from now that haven't been reminded yet, and marks
@@ -13,8 +13,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const SITE_URL = Deno.env.get("SITE_URL") ?? "https://glowupbook.com";
-const FROM = Deno.env.get("EMAIL_FROM") ?? "Glowup Book <bookings@glowupbook.com>";
+const SITE_URL = Deno.env.get("SITE_URL") ?? "https://karaokebarmap.com";
+const FROM = Deno.env.get("EMAIL_FROM") ?? "Karaoke Bar Map <bookings@karaokebarmap.com>";
 
 const esc = (s: unknown) =>
   String(s ?? "").replace(/[&<>"']/g, (c) =>

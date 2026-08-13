@@ -1,5 +1,5 @@
 // ============================================================================
-// Glowup Book — send-booking-email
+// Karaoke Bar Map — send-booking-email
 //
 // Sends the customer an email via Resend. Modes:
 //   • "booking"          — confirmation when an appointment is created (DB trigger)
@@ -17,8 +17,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const SITE_URL = Deno.env.get("SITE_URL") ?? "https://glowupbook.com";
-const FROM = Deno.env.get("EMAIL_FROM") ?? "Glowup Book <bookings@glowupbook.com>";
+const SITE_URL = Deno.env.get("SITE_URL") ?? "https://karaokebarmap.com";
+const FROM = Deno.env.get("EMAIL_FROM") ?? "Karaoke Bar Map <bookings@karaokebarmap.com>";
 
 // Escape strings before interpolating into the HTML email so attacker-chosen
 // values (customer name at booking, cancellation message, salon/service names)
@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
 
     let subject: string, html: string;
     const shell = (inner: string) =>
-      `<div style="font-family:Inter,Arial,sans-serif;max-width:520px;margin:0 auto;color:#1d1b2e">${inner}<p style="color:#8B8898;font-size:12px">Sent via Glowup Book</p></div>`;
+      `<div style="font-family:Inter,Arial,sans-serif;max-width:520px;margin:0 auto;color:#1d1b2e">${inner}<p style="color:#8B8898;font-size:12px">Sent via Karaoke Bar Map</p></div>`;
     const btn = (href: string, label: string) =>
       `<p><a href="${href}" style="background:#6C4AB6;color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:600;display:inline-block">${label}</a></p>`;
 

@@ -1,5 +1,5 @@
 // ============================================================================
-// Glowup Book app — drives the SPA. Two modes:
+// Karaoke Bar Map app — drives the SPA. Two modes:
 //   • /<salon-slug>  → public storefront booking flow (anonymous)
 //   • / (root)       → auth → onboarding → dashboard (salon members)
 // ============================================================================
@@ -109,7 +109,7 @@ const apptOnDay = (a, d, tz) => { const p = zonedParts(a.starts_at, tz); return 
 // ===========================================================================
 // ROUTER
 // ===========================================================================
-// The salon storefront lives at the root: glowupbook.com/<salon-slug>.
+// The salon storefront lives at the root: karaokebarmap.com/<salon-slug>.
 // These top-level paths are reserved for the app itself, so no salon may use
 // them as a slug (enforced at signup too). Anything with a slash or dot is a
 // nested route or a static file, never a salon.
@@ -164,72 +164,76 @@ async function startConfirm(token) {
 }
 
 // ---- legal pages (terms / privacy) ----------------------------------------
-const LEGAL_UPDATED = '1 July 2026';
+const LEGAL_UPDATED = '28 July 2026';
 const LEGAL = {
   terms: `
     <h1>Terms of Service</h1>
     <p class="legal-date">Last updated: ${LEGAL_UPDATED}</p>
-    <p>These Terms of Service ("Terms") govern your access to and use of Glowup Book (the "Platform"), operated by Glowup Book ("we", "us", "our"). By accessing or using the Platform, you agree to these Terms. If you do not agree, do not use the Platform.</p>
+    <p>These Terms of Service ("Terms") govern your access to and use of Karaoke Bar Map (the "Platform"), operated by Karaoke Bar Map ("we", "us", "our"). By accessing or using the Platform, you agree to these Terms. If you do not agree, do not use the Platform.</p>
 
-    <h2>1. What Glowup Book is (and is not)</h2>
-    <p>Glowup Book is an online directory and booking platform that lets customers ("Customers") discover and request appointments with independent salons, barbershops, nail studios, spas and similar businesses ("Salons"), and lets Salons manage their bookings and customers. <strong>We are a technology provider and neutral marketplace only.</strong> We are not a salon, we do not employ any Salon's staff, we do not provide beauty, hair, grooming, cosmetic or any other services, and we are not a party to any agreement or transaction between a Customer and a Salon.</p>
+    <h2>1. What Karaoke Bar Map is (and is not)</h2>
+    <p>Karaoke Bar Map is an online map, directory, and booking platform that lets people ("Customers") discover karaoke bars, KTV venues, and karaoke DJs/KJs ("Providers"), reserve private karaoke rooms or tables, and book DJs/KJs for events. <strong>We are a technology provider and neutral marketplace only.</strong> We are not a bar, venue, DJ, or KJ; we do not own or operate any venue, employ any Provider or their staff, host or run any karaoke event, serve alcohol, or provide any entertainment, and we are not a party to any agreement or transaction between a Customer and a Provider.</p>
 
-    <h2>2. Salons are independent — we are not responsible for their services</h2>
-    <p>Salons are independent third parties solely responsible for the services they offer and perform, including their quality, safety, timeliness, pricing, licensing, certifications, insurance, staff conduct, hygiene, health and safety, cancellations, refunds, no-shows, and compliance with all applicable laws. <strong>We do not endorse, verify, guarantee, or assume any responsibility or liability for any Salon, its staff, or the services it provides.</strong> Any dispute, claim, injury, loss, or damage arising out of or relating to services provided (or not provided) by a Salon is solely between you and that Salon.</p>
+    <h2>2. Providers are independent — we are not responsible for their venues or services</h2>
+    <p>Providers are independent third parties solely responsible for the venues they operate and the services they perform, including their quality, safety, timeliness, pricing, licensing (including any liquor, entertainment, or music/PRO licenses), certifications, insurance, staff and performer conduct, security, occupancy and fire-safety limits, age policies, cancellations, refunds, no-shows, and compliance with all applicable laws. <strong>We do not endorse, verify, guarantee, or assume any responsibility or liability for any Provider, venue, performer, or the services provided.</strong> Any dispute, claim, injury, loss, or damage arising out of or relating to a venue or services provided (or not provided) is solely between you and that Provider.</p>
 
-    <h2>3. Accounts</h2>
-    <p>You must provide accurate information and keep your account credentials confidential. You are responsible for all activity under your account. You must be at least 18 years old, or the age of majority in your jurisdiction, to create an account.</p>
+    <h2>3. Directory listings &amp; how they are sourced</h2>
+    <p>Some listings are created and managed by Providers. Others are unclaimed listings compiled from public sources, including OpenStreetMap, to help people find karaoke spots. Unclaimed listings are informational only, are not bookable, and may be incomplete, out of date, or inaccurate. If you are the owner of a venue or performer profile, you may claim your listing to manage it, or contact us to correct or remove it. Listing a business does not imply any affiliation with, or endorsement by, that business or us.</p>
 
-    <h2>4. Bookings</h2>
-    <p>When you request or accept a booking through the Platform, any resulting appointment is a contract solely between the Customer and the Salon. We merely facilitate communication and scheduling. We do not guarantee the availability, accuracy, or completeness of any listing, price, time slot, or that a Salon will honor, complete, or refund any booking.</p>
+    <h2>4. Accounts</h2>
+    <p>You must provide accurate information and keep your account credentials confidential. You are responsible for all activity under your account. You must be at least 18 years old, or the age of majority in your jurisdiction, to create an account. Venues and events may enforce their own age restrictions (for example, 21+ where alcohol is served); complying with those is between you and the Provider.</p>
 
-    <h2>5. User content</h2>
-    <p>You are solely responsible for any content you submit (including reviews, ratings, photos, listings, and business information). You represent that you own or have the rights to such content and that it is lawful, accurate, and non-infringing. You grant us a worldwide, non-exclusive, royalty-free license to host, display, and distribute your content on and in connection with the Platform. We may remove any content at our discretion.</p>
+    <h2>5. Bookings</h2>
+    <p>When you request or accept a booking through the Platform — such as a private-room reservation or a DJ/KJ engagement — any resulting booking is a contract solely between the Customer and the Provider. We merely facilitate communication and scheduling. We do not guarantee the availability, accuracy, or completeness of any listing, price, time slot, room, or performer, or that a Provider will honor, complete, or refund any booking.</p>
 
-    <h2>6. Salon and business users</h2>
-    <p>If you use the Platform to operate a Salon, you are additionally responsible for the accuracy of your listings, holding all required licenses and insurance, operating lawfully, and for any personal data you collect or process about your own customers and staff (for which you are the data controller). You agree to indemnify us as set out below in relation to your business and services.</p>
+    <h2>6. User content</h2>
+    <p>You are solely responsible for any content you submit (including reviews, ratings, photos, listings, set lists, and business or performer information). You represent that you own or have the rights to such content — including any rights in music, recordings, or performances you upload — and that it is lawful, accurate, and non-infringing. You grant us a worldwide, non-exclusive, royalty-free license to host, display, and distribute your content on and in connection with the Platform. We may remove any content at our discretion.</p>
 
-    <h2>7. Acceptable use</h2>
+    <h2>7. Venue and performer users</h2>
+    <p>If you use the Platform to list or operate a venue or perform as a DJ/KJ, you are additionally responsible for the accuracy of your listing, holding all required licenses and insurance (including any music licensing required to play or host karaoke), operating lawfully, and for any personal data you collect or process about your own customers and staff (for which you are the data controller). You agree to indemnify us as set out below in relation to your business and services.</p>
+
+    <h2>8. Acceptable use</h2>
     <p>You agree not to misuse the Platform, including: violating any law; infringing others' rights; posting false, harmful, or objectionable content; scraping or harvesting data; attempting to disrupt or gain unauthorized access to the Platform; or using it to spam or harass.</p>
 
-    <h2>8. Disclaimer of warranties</h2>
-    <p>THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE PLATFORM WILL BE UNINTERRUPTED, SECURE, ERROR-FREE, OR THAT ANY INFORMATION (INCLUDING SALON LISTINGS) IS ACCURATE OR COMPLETE.</p>
+    <h2>9. Disclaimer of warranties</h2>
+    <p>THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE PLATFORM WILL BE UNINTERRUPTED, SECURE, ERROR-FREE, OR THAT ANY INFORMATION (INCLUDING VENUE, PERFORMER, OR LOCATION LISTINGS) IS ACCURATE OR COMPLETE.</p>
 
-    <h2>9. Limitation of liability</h2>
-    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE AND OUR AFFILIATES, OFFICERS, AND AGENTS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, DATA, GOODWILL, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR RELATING TO YOUR USE OF (OR INABILITY TO USE) THE PLATFORM OR ANY SALON SERVICES. WE ARE NOT LIABLE FOR THE ACTS OR OMISSIONS OF ANY SALON, CUSTOMER, OR THIRD PARTY, OR FOR ANY INJURY, ILLNESS, OR DAMAGE ARISING FROM SERVICES BOOKED THROUGH THE PLATFORM. TO THE EXTENT WE ARE FOUND LIABLE, OUR TOTAL AGGREGATE LIABILITY WILL NOT EXCEED THE GREATER OF (A) THE AMOUNTS YOU PAID US IN THE 12 MONTHS BEFORE THE CLAIM, OR (B) USD $100. SOME JURISDICTIONS DO NOT ALLOW CERTAIN LIMITATIONS, SO SOME OF THE ABOVE MAY NOT APPLY TO YOU.</p>
+    <h2>10. Limitation of liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE AND OUR AFFILIATES, OFFICERS, AND AGENTS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, DATA, GOODWILL, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR RELATING TO YOUR USE OF (OR INABILITY TO USE) THE PLATFORM OR ANY PROVIDER VENUE OR SERVICES. WE ARE NOT LIABLE FOR THE ACTS OR OMISSIONS OF ANY PROVIDER, CUSTOMER, OR THIRD PARTY, OR FOR ANY INJURY, ILLNESS, OR DAMAGE ARISING FROM A VENUE VISIT OR SERVICES BOOKED THROUGH THE PLATFORM. TO THE EXTENT WE ARE FOUND LIABLE, OUR TOTAL AGGREGATE LIABILITY WILL NOT EXCEED THE GREATER OF (A) THE AMOUNTS YOU PAID US IN THE 12 MONTHS BEFORE THE CLAIM, OR (B) USD $100. SOME JURISDICTIONS DO NOT ALLOW CERTAIN LIMITATIONS, SO SOME OF THE ABOVE MAY NOT APPLY TO YOU.</p>
 
-    <h2>10. Indemnification</h2>
-    <p>You agree to defend, indemnify, and hold us harmless from any claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or related to your use of the Platform, your content, your services (if you are a Salon), or your breach of these Terms or of any law or third-party right.</p>
+    <h2>11. Indemnification</h2>
+    <p>You agree to defend, indemnify, and hold us harmless from any claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or related to your use of the Platform, your content, your venue or services (if you are a Provider), or your breach of these Terms or of any law or third-party right.</p>
 
-    <h2>11. Third-party services</h2>
-    <p>The Platform relies on third-party providers (for example, hosting, database, authentication, and email delivery). We are not responsible for third-party services, and their use of your data is governed by their own terms and policies.</p>
+    <h2>12. Third-party services</h2>
+    <p>The Platform relies on third-party providers (for example, hosting, database, authentication, mapping/geolocation, and email delivery). We are not responsible for third-party services, and their use of your data is governed by their own terms and policies.</p>
 
-    <h2>12. Changes; termination</h2>
+    <h2>13. Changes; termination</h2>
     <p>We may modify the Platform or these Terms at any time; continued use after changes take effect constitutes acceptance. We may suspend or terminate access at any time, with or without cause.</p>
 
-    <h2>13. Governing law &amp; disputes</h2>
+    <h2>14. Governing law &amp; disputes</h2>
     <p>These Terms are governed by the laws of the State of New York, USA, without regard to conflict-of-laws rules. You agree that the exclusive venue for any dispute is the state and federal courts located in New York, unless otherwise required by applicable law. <em>[Confirm or change the governing jurisdiction with your attorney.]</em></p>
 
-    <h2>14. Contact</h2>
-    <p>Questions about these Terms: <a href="mailto:hello@glowupbook.com">hello@glowupbook.com</a>.</p>
+    <h2>15. Contact</h2>
+    <p>Questions about these Terms: <a href="mailto:hello@karaokebarmap.com">hello@karaokebarmap.com</a>.</p>
   `,
   privacy: `
     <h1>Privacy Policy</h1>
     <p class="legal-date">Last updated: ${LEGAL_UPDATED}</p>
-    <p>This Privacy Policy explains how Glowup Book ("we", "us") collects, uses, and shares information when you use our Platform.</p>
+    <p>This Privacy Policy explains how Karaoke Bar Map ("we", "us") collects, uses, and shares information when you use our Platform.</p>
 
     <h2>1. Information we collect</h2>
     <ul>
       <li><strong>Account information</strong> — name, email address, phone number, and password (stored hashed by our authentication provider).</li>
-      <li><strong>Booking information</strong> — the services, times, salons, and staff you book, and related notes.</li>
-      <li><strong>Content you submit</strong> — reviews, ratings, photos, favorites, and (for Salons) business and staff details.</li>
+      <li><strong>Booking information</strong> — the rooms, sets, times, venues, and performers you book, and related notes.</li>
+      <li><strong>Content you submit</strong> — reviews, ratings, photos, favorites, and (for Providers) venue or performer details.</li>
+      <li><strong>Approximate location</strong> — if you choose to search near you, so we can show nearby karaoke spots on the map. We do not track your location in the background.</li>
       <li><strong>Usage &amp; device data</strong> — basic technical information needed to operate and secure the Platform.</li>
-      <li><strong>Salon customer data</strong> — if you are a Salon, information you enter about your own customers, which you control.</li>
+      <li><strong>Provider customer data</strong> — if you are a Provider, information you enter about your own customers, which you control.</li>
     </ul>
 
     <h2>2. How we use information</h2>
     <ul>
-      <li>To provide the Platform and facilitate bookings between Customers and Salons.</li>
+      <li>To provide the Platform and facilitate bookings between Customers and Providers.</li>
       <li>To send transactional messages such as booking confirmations and reminders.</li>
       <li>To operate, secure, maintain, and improve the Platform.</li>
       <li>To comply with legal obligations and enforce our Terms.</li>
@@ -237,14 +241,14 @@ const LEGAL = {
 
     <h2>3. How we share information</h2>
     <ul>
-      <li><strong>With the Salon you book</strong> — your booking details (such as name, contact info, and appointment) are shared with that Salon so they can provide the service.</li>
-      <li><strong>With service providers</strong> — hosting, database/authentication, and email-delivery vendors that process data on our behalf under their own terms.</li>
+      <li><strong>With the Provider you book</strong> — your booking details (such as name, contact info, and reservation) are shared with that venue or performer so they can provide the service.</li>
+      <li><strong>With service providers</strong> — hosting, database/authentication, mapping, and email-delivery vendors that process data on our behalf under their own terms.</li>
       <li><strong>For legal reasons</strong> — where required by law or to protect rights, safety, and the integrity of the Platform.</li>
     </ul>
     <p>We do not sell your personal information.</p>
 
-    <h2>4. Salons as data controllers</h2>
-    <p>If you are a Salon, you are the controller of the personal data you collect about your own customers and staff, and you are responsible for having a lawful basis to process it and for your own privacy notices. We process that data on your behalf to provide the Platform.</p>
+    <h2>4. Providers as data controllers</h2>
+    <p>If you are a Provider, you are the controller of the personal data you collect about your own customers and staff, and you are responsible for having a lawful basis to process it and for your own privacy notices. We process that data on your behalf to provide the Platform.</p>
 
     <h2>5. Cookies &amp; local storage</h2>
     <p>We use browser local storage to keep you signed in and to operate core features. We do not use third-party advertising cookies.</p>
@@ -262,7 +266,7 @@ const LEGAL = {
     <p>We operate in the United States, and your information may be processed there. By using the Platform you consent to this processing.</p>
 
     <h2>10. Changes &amp; contact</h2>
-    <p>We may update this Policy from time to time. Questions or requests: <a href="mailto:hello@glowupbook.com">hello@glowupbook.com</a>.</p>
+    <p>We may update this Policy from time to time. Questions or requests: <a href="mailto:hello@karaokebarmap.com">hello@karaokebarmap.com</a>.</p>
   `,
 };
 
@@ -1111,7 +1115,7 @@ function openLinkEmployee(refresh) {
   const f = {};
   const salonName = state.salon?.name || 'our venue';
   const signupUrl = `${location.origin}/`;
-  const msg = `Join ${salonName} on Glowup Book! Create your host account at ${signupUrl} (choose "I'm a host"), then I'll add you to the roster.`;
+  const msg = `Join ${salonName} on Karaoke Bar Map! Create your host account at ${signupUrl} (choose "I'm a host"), then I'll add you to the roster.`;
   const isEmail = (v) => /@/.test(v || '');
   const wrap = el('div', {},
     el('p', { class: 'muted', style: 'margin-top:0;font-size:14px' }, 'Already registered? Link them by the email or phone they used. Not yet? Send an invite to sign up.'),
@@ -1120,7 +1124,7 @@ function openLinkEmployee(refresh) {
     el('button', { class: 'btn block', style: 'margin-bottom:12px', onclick: link }, 'Link existing account'),
     el('div', { class: 'muted', style: 'font-size:13px;margin-bottom:6px' }, 'Or invite them to register:'),
     el('div', { class: 'row' },
-      el('button', { class: 'btn ghost', onclick: () => { const to = isEmail(f.id.value) ? f.id.value.trim() : ''; window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent('Join ' + salonName + ' on Glowup Book')}&body=${encodeURIComponent(msg)}`; } }, '✉ Invite by email'),
+      el('button', { class: 'btn ghost', onclick: () => { const to = isEmail(f.id.value) ? f.id.value.trim() : ''; window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent('Join ' + salonName + ' on Karaoke Bar Map')}&body=${encodeURIComponent(msg)}`; } }, '✉ Invite by email'),
       el('button', { class: 'btn ghost', onclick: () => { const to = !isEmail(f.id.value) ? (f.id.value || '').replace(/[^0-9+]/g, '') : ''; window.location.href = `sms:${to}?&body=${encodeURIComponent(msg)}`; } }, '💬 Invite by text')));
   const close = modal('Add a host', wrap);
   async function link() {
